@@ -44,4 +44,7 @@ $ node lib/index atf stash-export.csv
 ```
 
 5. A Chrome window will open to ATF. Log in.
-6. TBD!
+6. The program will redirect you to the flavor stash page and enter the first flavor from your list.
+7. Click the check box next to the correct flavor in the results list. You can change what is in the text box if necessary to find the correct flavor.
+8. The program will continue by typing in the next flavor name.
+9. Repeat steps 7-8 until complete.
