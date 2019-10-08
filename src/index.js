@@ -33,7 +33,7 @@ const importFlavors = async () => {
       const { vendor_abbreviation: vendor, name } = flavor;
       const flavorSlug = `${name} ${vendor}`;
       const $addText = await page.$('input[name="fladd"]');
-      const $addButton = await page.$('.btn[type="submit"]');
+      const [, $addButton] = await page.$$('.btn[type="submit"]');
 
       log.info(`Adding ${flavorSlug}`);
       $addText.type(flavorSlug);
