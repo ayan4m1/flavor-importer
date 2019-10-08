@@ -14,7 +14,7 @@ const importFlavors = async () => {
 
   await page.goto('https://e-liquid-recipes.com/login');
   log.info('Waiting for login...');
-  await page.waitForNavigation();
+  await page.waitForNavigation({ timeout: 0 });
 
   if (!page.url().endsWith('/mine')) {
     log.error('Login failed.');
@@ -22,21 +22,33 @@ const importFlavors = async () => {
   }
 
   log.info('Logged in successfully');
-  await page.goto('https://e-liquid-recipes.com/stash');
+  await page.goto('https://e-liquid-recipes.com/stash', {
+    waitUntil: ['load', 'networkidle2']
+  });
 
-  for (const flavor of flavors) {
-    const { vendor_abbreviation: vendor, name } = flavor;
-    const flavorSlug = `${name} ${vendor}`;
-    const $addText = await page.$('input[name="fladd"]');
-    const $addButton = await page.$('btn.submit');
+  log.info('Navigated to stash, starting add...');
+  try {
+    for (const flavor of flavors) {
+      const { vendor_abbreviation: vendor, name } = flavor;
+      const flavorSlug = `${name} ${vendor}`;
+      const $addText = await page.$('input[name="fladd"]');
+      const $addButton = await page.$('.btn[type="submit"]');
 
-    $addText.type(flavorSlug);
-    await page.waitForSelector('.ui-autocomplete', { visible: true });
-    log.info('Pick a flavor...');
-    await page.waitForSelector('.ui-autocomplete', { hidden: true });
-    await page.waitFor(1000);
-    $addButton.click();
-    await page.waitForNavigation();
+      log.info(`Adding ${flavorSlug}`);
+      $addText.type(flavorSlug);
+      await page.waitForSelector('.ui-autocomplete', { visible: true });
+      log.info('Pick a flavor...');
+      await page.waitForSelector('.ui-autocomplete', { hidden: true });
+      $addButton.click();
+      await page.waitForNavigation({
+        timeout: 0,
+        waitUntil: ['load', 'networkidle2']
+      });
+    }
+  } catch (error) {
+    log.error(error.message, error);
+    await page.close();
+    await browser.close();
   }
 };
 
