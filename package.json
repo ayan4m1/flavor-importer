@@ -11,8 +11,11 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.2",
+    "commander": "^3.0.2",
     "cosmiconfig": "^5.2.1",
+    "get-stream": "^5.1.0",
     "jsonfile": "^5.0.0",
+    "neat-csv": "^5.1.0",
     "nightwatch": "^1.2.1",
     "puppeteer": "^1.20.0",
     "winston": "^3.2.1"
