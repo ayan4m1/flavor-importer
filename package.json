@@ -6,11 +6,15 @@
   "license": "MIT",
   "scripts": {
     "build": "gulp",
-    "develop": "gulp watch"
+    "develop": "gulp watch",
+    "start": "gulp && node lib/index.js"
   },
   "dependencies": {
+    "@babel/runtime": "^7.6.2",
     "cosmiconfig": "^5.2.1",
+    "jsonfile": "^5.0.0",
     "nightwatch": "^1.2.1",
+    "puppeteer": "^1.20.0",
     "winston": "^3.2.1"
   },
   "devDependencies": {
