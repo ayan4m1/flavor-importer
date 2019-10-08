@@ -1,6 +1,6 @@
-import { Container, format, transports } from "winston";
+import { Container, format, transports } from 'winston';
 
-import configs from "./config";
+import configs from './config';
 
 const { combine, label, prettyPrint, printf, timestamp } = format;
 const { logging: config } = configs;
@@ -22,6 +22,7 @@ const createLogger = (category, categoryLabel) => {
   container.add(category, {
     transports: [
       new transports.Console({
+        level: config.level,
         format: combine.apply(null, formatters)
       })
     ]
