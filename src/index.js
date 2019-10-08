@@ -8,7 +8,8 @@ const log = loggers('app');
 const importFlavors = async () => {
   const flavors = await readFile('./flavors.json');
   const browser = await puppeteer.launch({
-    headless: false
+    headless: false,
+    defaultViewport: null
   });
   const page = await browser.newPage();
 
