@@ -15,7 +15,7 @@ This utility helps you copy your flavor stash from ELR to ATF or vice-versa.
 4. Run the following commands:
 
 ```
-$ git clone git@github.com:ayan4m1/flavor-importer.git
+$ git clone https://github.com/ayan4m1/elr-flavor-importer.git
 $ cd flavor-importer
 $ npm install
 $ npm run build
@@ -36,7 +36,7 @@ $ node lib/index elr flavors.json
 4. Run the following commands:
 
 ```
-$ git clone git@github.com:ayan4m1/flavor-importer.git
+$ git clone https://github.com/ayan4m1/elr-flavor-importer.git
 $ cd flavor-importer
 $ npm install
 $ npm run build
