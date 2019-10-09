@@ -36,8 +36,15 @@ export default async csv => {
     for (const flavor of flavors) {
       const $input = await page.$('#name_like');
       const { Flavor: flavorSlug } = flavor;
-      const [, rawName, rawVendor] = flavorSlug.match(flavorNamePattern);
-      const searchTerm = `${rawVendor} ${rawName}`;
+
+      let searchTerm = flavorSlug;
+      const matchResult = flavorSlug.match(flavorNamePattern);
+
+      if (matchResult) {
+        const [, rawName, rawVendor] = matchResult;
+
+        searchTerm = `${rawVendor} ${rawName}`;
+      }
 
       page.evaluate(input => {
         input.value = '';
