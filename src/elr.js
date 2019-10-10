@@ -44,13 +44,24 @@ export default async json => {
       log.info(`Adding ${flavorSlug}`);
       $addText.type(flavorSlug);
       await page.waitForSelector('.ui-autocomplete', { visible: true });
-      log.info('Pick a flavor...');
-      await page.waitForSelector('.ui-autocomplete', { hidden: true });
-      $addButton.click();
-      await page.waitForNavigation({
-        timeout: 0,
-        waitUntil: ['load', 'networkidle2']
-      });
+      log.info('Pick a flavor or refresh the page to skip...');
+      const result = await Promise.race([
+        page.waitForSelector('.ui-autocomplete', { hidden: true }),
+        page.waitForNavigation({
+          timeout: 0,
+          waitUntil: ['load']
+        })
+      ]);
+
+      if (result && typeof result.executionContext === 'function') {
+        await Promise.all([
+          page.waitForNavigation({
+            timeout: 0,
+            waitUntil: ['load', 'networkidle2']
+          }),
+          $addButton.click()
+        ]);
+      }
     }
   } catch (error) {
     log.error(error.message, error);
