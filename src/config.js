@@ -1,6 +1,6 @@
-import cosmiconfig from 'cosmiconfig';
+import { cosmiconfigSync } from 'cosmiconfig';
 
-const configSearch = cosmiconfig('flavor').searchSync();
+const configSearch = cosmiconfigSync('flavor').search();
 
 if (configSearch === null) {
   throw new Error(
