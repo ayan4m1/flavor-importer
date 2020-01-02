@@ -94,7 +94,7 @@ export default async json => {
           break;
         case 'RF':
           vendor = 'Real Flavors';
-          vendorAbbreviation = '(SC) (Real Flavors)';
+          vendorAbbreviation = 'SC) (Real Flavors';
           break;
         case 'HS':
           vendor = 'Hangsen';
@@ -116,7 +116,8 @@ export default async json => {
           vendor = 'One on One';
           break;
         case 'VTA':
-          vendor = 'Vape Train Australia';
+          vendor = 'VT';
+          vendorAbbreviation = 'VTA';
           break;
         default:
           vendor = vendorCode;
