@@ -125,8 +125,9 @@ export default async json => {
 
       // set abbreviation to vendor or code, preferring a vendor slug if one
       // is available
-      vendorAbbreviation =
-        vendorAbbreviation || vendor !== vendorCode ? vendor : vendorCode;
+      if (!vendorAbbreviation) {
+        vendorAbbreviation = vendor !== vendorCode ? vendor : vendorCode;
+      }
 
       const flavorSlug = `${name} ${vendor}`;
       const exactName = `${name} (${vendorAbbreviation})`.toLowerCase();
