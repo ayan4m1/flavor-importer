@@ -90,6 +90,10 @@ export default async json => {
         ]);
       }
     }
+
+    log.info('done importing!');
+    await page.close();
+    await browser.close();
   } catch (error) {
     log.error('Failed during execution: ', error);
 

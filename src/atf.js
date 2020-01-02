@@ -67,6 +67,10 @@ export default async csv => {
         page.waitForNavigation({ timeout: 0, waitUntil: ['load'] })
       ]);
     }
+
+    log.info('done importing!');
+    await page.close();
+    await browser.close();
   } catch (error) {
     log.error(error.message, error);
 
