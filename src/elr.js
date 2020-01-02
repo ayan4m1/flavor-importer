@@ -30,9 +30,10 @@ const setup = async () => {
   }
 };
 
-const getOptions = waitUntil => ({
+const getOptions = (options = {}) => ({
   timeout: 0,
-  waitUntil
+  waitUntil: ['load'],
+  ...options
 });
 
 export default async json => {
@@ -51,41 +52,132 @@ export default async json => {
     $email.click();
 
     log.info('Waiting for login...');
-    await page.waitForNavigation({ timeout: 0 });
+    await page.waitForNavigation(getOptions());
     if (!page.url().endsWith('/mine')) {
       throw new Error('Login failed.');
     }
 
     log.info('Logged in successfully');
-    await page.goto(
-      'https://e-liquid-recipes.com/stash',
-      getOptions(['load', 'networkidle2'])
-    );
+    await page.goto('https://e-liquid-recipes.com/stash', getOptions());
 
     log.info('Navigated to stash, starting add...');
     for (const flavor of flavors) {
-      const { vendor_abbreviation: vendor, name } = flavor;
+      const { vendor_abbreviation: rawVendorCode, name } = flavor;
+
+      let vendorCode;
+
+      switch (rawVendorCode) {
+        case 'DFS':
+          vendorCode = 'DIYFS';
+          break;
+        case 'VT':
+          vendorCode = 'VTA';
+          break;
+        default:
+          vendorCode = rawVendorCode;
+      }
+
+      let vendor, vendorAbbreviation;
+
+      switch (vendorCode) {
+        case 'INW':
+          vendor = 'Inawera';
+          break;
+        case 'FLV':
+          vendor = 'Flavorah';
+          break;
+        case 'MB':
+          vendor = 'Molinberry';
+          break;
+        case 'JF':
+          vendor = 'Jungle Flavors';
+          break;
+        case 'RF':
+          vendor = 'Real Flavors';
+          vendorAbbreviation = '(SC) (Real Flavors)';
+          break;
+        case 'HS':
+          vendor = 'Hangsen';
+          break;
+        case 'PUR':
+          vendor = 'Purilum';
+          break;
+        case 'NR':
+          vendor = 'Nicotine River';
+          break;
+        case 'SM':
+          vendor = 'Stixx Mixx';
+          break;
+        case 'LA':
+          vendor = 'LorAnn';
+          vendorAbbreviation = 'LA';
+          break;
+        case 'OOO':
+          vendor = 'One on One';
+          break;
+        case 'VTA':
+          vendor = 'Vape Train Australia';
+          break;
+        default:
+          vendor = vendorCode;
+      }
+
+      // set abbreviation to vendor or code, preferring a vendor slug if one
+      // is available
+      vendorAbbreviation =
+        vendorAbbreviation || vendor !== vendorCode ? vendor : vendorCode;
+
       const flavorSlug = `${name} ${vendor}`;
+      const exactName = `${name} (${vendorAbbreviation})`.toLowerCase();
       const $addText = await page.$('#fladd');
+      const $exactMatch = await page.$$eval(
+        'a.fname',
+        (elements, text) =>
+          elements.find(el => el?.innerText?.toLowerCase() === text),
+        exactName
+      );
+
+      log.info(`Looking for flavor with name ${exactName}`);
+      if ($exactMatch) {
+        log.info(
+          `Found exact match for ${exactName} already in stash, skipping...`
+        );
+
+        continue;
+      }
 
       log.info(`Adding ${flavorSlug}`);
       $addText.type(flavorSlug);
       let result = await Promise.race([
-        page.waitForSelector('.ui-autocomplete', { visible: true }),
-        page.waitForNavigation(getOptions(['load']))
+        page.waitForSelector('.ui-autocomplete', getOptions({ visible: true })),
+        page.waitForNavigation(getOptions())
       ]);
+
+      const $menuItems = await page.$$('.ui-autocomplete .ui-menu-item');
+
+      if (Array.isArray($menuItems) && $menuItems.length === 1) {
+        log.info('Only one result, selecting it...');
+
+        const [$menuItem] = $menuItems;
+        const [, $addButton] = await page.$$('.btn[type="submit"]');
+
+        $menuItem.click();
+        $addButton.click();
+        await page.waitForNavigation(getOptions());
+        continue;
+      }
 
       log.info('Pick a flavor or refresh the page to skip...');
       result = await Promise.race([
-        page.waitForSelector('.ui-autocomplete', { hidden: true }),
-        page.waitForNavigation(getOptions(['load']))
+        page.waitForSelector('.ui-autocomplete', getOptions({ hidden: true })),
+        page.waitForNavigation(getOptions())
       ]);
 
       if (result && typeof result.executionContext === 'function') {
         const [, $addButton] = await page.$$('.btn[type="submit"]');
 
         await Promise.all([
-          page.waitForNavigation(getOptions(['load', 'networkidle2'])),
+          page.waitForNavigation(getOptions()),
           $addButton.click()
         ]);
       }
