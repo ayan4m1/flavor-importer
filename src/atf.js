@@ -3,13 +3,14 @@ import puppeteer from 'puppeteer';
 import getStream from 'get-stream';
 import { createReadStream } from 'fs';
 
-import loggers from './logging';
+import loggers from './logging.js';
 
-const log = loggers('app');
+const log = loggers('atf');
 const flavorNamePattern = /(.*)\(([A-Z0-9]+)\)/i;
-const stashUrlPattern = /https:\/\/alltheflavors.com\/my\/flavors\/([A-Z0-9-]+)\/stash/i;
+const stashUrlPattern =
+  /https:\/\/alltheflavors.com\/my\/flavors\/([A-Z0-9-]+)\/stash/i;
 
-export default async csv => {
+export default async (csv) => {
   const browser = await puppeteer.launch({
     headless: false,
     defaultViewport: null
@@ -25,7 +26,7 @@ export default async csv => {
 
     await page.goto('https://alltheflavors.com');
     log.info('Waiting for login...');
-    await page.waitForSelector('a[href="/recipes?owner=both"]', {
+    await page.waitForSelector('a[href="/sign_out"]', {
       timeout: 0
     });
 
@@ -46,13 +47,13 @@ export default async csv => {
         searchTerm = `${rawVendor} ${rawName}`;
       }
 
-      page.evaluate(input => {
+      page.evaluate((input) => {
         input.value = '';
       }, $input);
       $input.type(searchTerm);
       log.info('Waiting for results...');
       await page.waitForResponse(
-        response =>
+        (response) =>
           response
             .url()
             .startsWith('https://alltheflavors.com/flavors/live_search'),
@@ -61,9 +62,12 @@ export default async csv => {
       log.info('Check a box or hit reload to skip...');
 
       await Promise.race([
-        page.waitForResponse(response => stashUrlPattern.test(response.url()), {
-          timeout: 0
-        }),
+        page.waitForResponse(
+          (response) => stashUrlPattern.test(response.url()),
+          {
+            timeout: 0
+          }
+        ),
         page.waitForNavigation({ timeout: 0, waitUntil: ['load'] })
       ]);
     }

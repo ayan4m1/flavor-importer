@@ -1,22 +1,18 @@
-const path = require('path');
-
 module.exports = {
   env: {
     commonjs: true,
     es6: true,
     node: true
   },
-  plugins: ['import', 'prettier'],
   extends: [
     'eslint:recommended',
     'plugin:prettier/recommended',
-    'plugin:import/errors',
-    'prettier'
+    'plugin:import/recommended'
   ],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
-    ecmaVersion: 9,
-    sourceType: 'module'
+    ecmaVersion: 12,
+    requireConfigFile: false
   },
   rules: {
     'accessor-pairs': 2,

@@ -1,44 +1,30 @@
 {
+  "type": "module",
   "name": "flavor-importer",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "Import flavors between ATF and ELR",
   "author": "ayan4m1 <andrew@bulletlogic.com>",
   "license": "MIT",
   "scripts": {
-    "build": "gulp",
-    "develop": "gulp watch",
-    "start": "gulp && node lib/index.js"
+    "start": "node src/index.js"
   },
   "dependencies": {
-    "@babel/runtime": "^7.7.4",
-    "commander": "^4.0.1",
-    "cosmiconfig": "^6.0.0",
-    "get-stream": "^5.1.0",
-    "jsonfile": "^5.0.0",
-    "neat-csv": "^5.1.0",
-    "nightwatch": "^1.3.1",
-    "puppeteer": "^2.0.0",
-    "winston": "^3.2.1"
+    "commander": "^10.0.0",
+    "get-stream": "^6.0.1",
+    "jsonfile": "^6.1.0",
+    "neat-csv": "^7.0.0",
+    "puppeteer": "^19.6.3",
+    "winston": "^3.8.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
-    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
-    "@babel/plugin-transform-regenerator": "^7.7.4",
-    "@babel/plugin-transform-runtime": "^7.7.4",
-    "@babel/preset-env": "^7.7.4",
-    "@babel/register": "^7.7.4",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.7.2",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-prettier": "^3.1.1",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-eslint": "^6.0.0",
-    "husky": "^3.1.0",
-    "lint-staged": "^9.5.0",
-    "prettier": "^1.19.1",
-    "prettier-eslint": "^9.0.1"
+    "@babel/eslint-parser": "^7.19.1",
+    "@babel/preset-env": "^7.20.2",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.1",
+    "prettier": "^2.8.4"
   }
 }

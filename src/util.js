@@ -1,8 +1,6 @@
-import { resolve } from 'path';
-import { readFileSync } from 'jsonfile';
+import jsonfile from 'jsonfile';
 
-export const getPackageVersion = () => {
-  const packageInfo = readFileSync(resolve(__dirname, '..', 'package.json'));
+const { readFileSync } = jsonfile;
 
-  return packageInfo && packageInfo.version;
-};
+export const getPackageVersion = () =>
+  readFileSync(new URL('../package.json', import.meta.url))?.version;

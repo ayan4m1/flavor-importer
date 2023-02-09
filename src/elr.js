@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer';
-import { readFile } from 'jsonfile';
+import jsonfile from 'jsonfile';
 
-import loggers from './logging';
+import loggers from './logging.js';
 
-const log = loggers('app');
+const { readFile } = jsonfile;
+const log = loggers('elr');
 
 const setup = async () => {
   try {
@@ -36,7 +37,7 @@ const getOptions = (options = {}) => ({
   ...options
 });
 
-export default async json => {
+export default async (json) => {
   const { browser, page } = await setup();
 
   try {
@@ -44,12 +45,17 @@ export default async json => {
 
     await page.goto('https://e-liquid-recipes.com/login');
     log.info('Priming login form...');
-    await page.waitForSelector('#gdpr-cookie-accept', { visible: true });
-    const $acceptCookie = await page.$('#gdpr-cookie-accept');
+    await page.waitForSelector(
+      '.qc-cmp2-summary-buttons',
+      getOptions({ visible: true })
+    );
+    const $acceptCookie = await page.$(
+      '.qc-cmp2-summary-buttons button[mode="primary"]'
+    );
     const $email = await page.$('input[name="email"]');
 
-    $acceptCookie.click();
-    $email.click();
+    await $acceptCookie.click();
+    await $email.click();
 
     log.info('Waiting for login...');
     await page.waitForNavigation(getOptions());
@@ -135,7 +141,7 @@ export default async json => {
       const $exactMatch = await page.$$eval(
         'a.fname',
         (elements, text) =>
-          elements.find(el => el?.innerText?.toLowerCase() === text),
+          elements.find((el) => el?.innerText?.toLowerCase() === text),
         exactName
       );
 
